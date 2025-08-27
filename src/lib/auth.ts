@@ -64,12 +64,13 @@ export const authService = {
   async signUp(email: string, password: string, role: 'Admin' | 'Recruiter' = 'Recruiter'): Promise<Admin | null> {
     try {
       // Create admin profile directly in database
+      const hash_passowrd = await bcrypt.hash(password, 10);
       const { data: profile, error } = await supabase
         .from('admin_users')
         .insert([
           {
             email,
-            password_hash: password, // In production, hash this properly
+            password_hash: hash_passowrd, // In production, hash this properly
             role,
             name: email.split('@')[0], // Use email prefix as default name
           }
