@@ -64,9 +64,9 @@ export const authService = {
   async signUp(email: string, password: string, role: 'Admin' | 'Recruiter' = 'Recruiter'): Promise<Admin | null> {
     try {
       // Create admin profile directly in database
-      const passowrd_hash = await bcrypt.hash(password, 10);
+      const passwordd_hash = await bcrypt.hash(password, 10);
       console.log(password);
-      console.log(passowrd_hash);
+      console.log(password_hash);
       const { data: profile, error } = await supabase
         .from('admin_users')
         .insert([
