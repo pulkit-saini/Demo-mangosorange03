@@ -74,10 +74,10 @@ export const authService = {
             email,
             password_hash, // In production, hash this properly
             role,
-            name: email.split('@')[0], // Use email prefix as default name
+            // name: email.split('@')[0], // Use email prefix as default name
           }
         ])
-        .select()
+        .select('id, email, role')
         .single();
 
       if (error) throw error;
