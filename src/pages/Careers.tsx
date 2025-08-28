@@ -46,6 +46,7 @@ const Careers = () => {
 
   const loadJobs = async () => {
     try {
+      setLoading(true);
       const jobPostings = await careerAPI.getJobPostings();
       setJobs(jobPostings);
     } catch (error) {

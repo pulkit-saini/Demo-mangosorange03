@@ -65,11 +65,13 @@ const JobForm = ({ job, onSuccess, onCancel }: JobFormProps) => {
       let success = false;
       
       if (job) {
+        // For updates, only send the changed fields
         success = await careerAPI.updateJobPosting(job.id, data);
         if (success) {
           toast.success('Job posting updated successfully');
         }
       } else {
+        // For new jobs, send all required fields
         const newJob = await careerAPI.createJobPosting(data);
         success = !!newJob;
         if (success) {

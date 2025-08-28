@@ -15,15 +15,15 @@ export const authService = {
         .from('admin_users')
         .select('*')
         .eq('email', email)
-        .maybeSingle();
+        .single();
 
       if (error) {
         console.error('Database error:', error);
-        throw new Error('Invalid credentials');
+        return null;
       }
 
       if (!profile) {
-        throw new Error('Invalid credentials');
+        return null;
       }
 
       // For the default admin user, check if it's the plain text password

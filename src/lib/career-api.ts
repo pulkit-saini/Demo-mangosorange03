@@ -14,12 +14,20 @@ export const careerAPI = {
         .order('created_at', { ascending: false });
 
       if (!includeHidden) {
-        query = query.eq('is_visible', true).eq('status', 'Active');
+        query = query
+          .eq('is_visible', true)
+          .eq('status', 'Active');
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching job postings:', error);
+        throw error;
+      }
 
+      if (!data) {
+        return [];
+      }
       return data.map(job => ({
         id: job.id,
         title: job.title,
@@ -125,23 +133,28 @@ export const careerAPI = {
 
   async updateJobPosting(id: string, updates: Partial<JobPosting>): Promise<boolean> {
     try {
+      // Build the update object with only the fields that are provided
+      const updateData: any = {
+        updated_at: new Date().toISOString(),
+      };
+
+      // Only include fields that are actually being updated
+      if (updates.title !== undefined) updateData.title = updates.title;
+      if (updates.department !== undefined) updateData.department = updates.department;
+      if (updates.type !== undefined) updateData.type = updates.type;
+      if (updates.location !== undefined) updateData.location = updates.location;
+      if (updates.experience !== undefined) updateData.experience = updates.experience;
+      if (updates.salary !== undefined) updateData.salary = updates.salary;
+      if (updates.description !== undefined) updateData.description = updates.description;
+      if (updates.responsibilities !== undefined) updateData.responsibilities = updates.responsibilities;
+      if (updates.requirements !== undefined) updateData.requirements = updates.requirements;
+      if (updates.deadline !== undefined) updateData.deadline = updates.deadline;
+      if (updates.status !== undefined) updateData.status = updates.status;
+      if (updates.isVisible !== undefined) updateData.is_visible = updates.isVisible;
+
       const { error } = await supabase
         .from('job_postings')
-        .update({
-          title: updates.title,
-          department: updates.department,
-          type: updates.type,
-          location: updates.location,
-          experience: updates.experience,
-          salary: updates.salary,
-          description: updates.description,
-          responsibilities: updates.responsibilities,
-          requirements: updates.requirements,
-          deadline: updates.deadline,
-          status: updates.status,
-          is_visible: updates.isVisible,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updateData)
         .eq('id', id);
 
       if (error) throw error;
@@ -154,12 +167,18 @@ export const careerAPI = {
 
   async deleteJobPosting(id: string): Promise<boolean> {
     try {
+      console.log('Deleting job posting with ID:', id);
       const { error } = await supabase
         .from('job_postings')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Delete error:', error);
+        throw error;
+      }
+      
+      console.log('Job posting deleted successfully');
       return true;
     } catch (error) {
       console.error('Error deleting job posting:', error);

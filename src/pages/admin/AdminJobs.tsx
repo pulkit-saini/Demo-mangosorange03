@@ -18,7 +18,8 @@ import {
   EyeOff,
   Calendar,
   MapPin,
-  Users
+  Users,
+  Briefcase
 } from 'lucide-react';
 
 const AdminJobs = () => {
@@ -71,11 +72,12 @@ const AdminJobs = () => {
 
   const handleToggleVisibility = async (job: JobPosting) => {
     try {
+      const newVisibility = !job.isVisible;
       const success = await careerAPI.updateJobPosting(job.id, {
-        isVisible: !job.isVisible
+        isVisible: newVisibility
       });
       if (success) {
-        toast.success(`Job ${job.isVisible ? 'hidden' : 'made visible'} successfully`);
+        toast.success(`Job ${newVisibility ? 'made visible' : 'hidden'} successfully`);
         loadJobs();
       } else {
         toast.error('Failed to update visibility');
